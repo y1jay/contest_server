@@ -1,0 +1,42 @@
+const jwt = require("jsonwebtoken");
+const connection = require("../db/mysql_connection");
+
+const auth = async (req, res, next) => {
+  let token;
+  try {
+    token = req.header("Authorization");
+    token = token.replace("Bearer ", "");
+  } catch (e) {
+    res.status(401).json({ error: e, message: "hi2" });
+    return;
+  }
+
+  let user_id;
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    user_id = decoded.user_id;
+  } catch (e) {
+    res.status(401).json({ error: e });
+    return;
+  }
+
+  let query = `select u.id,u.email,t.token 
+  from photo_user as u join photo_user_token as t on u.id = t.user_id 
+  where u.id = ${user_id} and t.token = "${token}"`;
+
+  try {
+    [rows] = await connection.query(query);
+    console.log(rows);
+    if (rows.length == 0) {
+      res.status(401).json({ message: "hi" });
+      return;
+    } else {
+      req.user = rows[0];
+      next();
+    }
+  } catch (e) {
+    res.status(500).json({ e });
+  }
+};
+
+module.exports = auth;
