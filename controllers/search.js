@@ -2,9 +2,8 @@ const connection = require("../db/mysql_connection");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { filter } = require("mysql2/lib/constants/charset_encodings");
 
-// @desc        현제 위치 기반 키워드 검색
+// @desc        스포츠 검색
 // @route       GET /api/v1/search/sportsearch?keyword=&lat=&lng=&offset=
 // @request
 // @response    success, cnt, items[]
@@ -57,7 +56,7 @@ exports.getSports = async (req, res, next) => {
 };
 
 // @desc        park  main 화면용
-// @route       GET /api/v1/search/park?keyword=&offset=
+// @route       GET /api/v1/search/park?offset=&lat=&lng
 // @request
 // @response    success, cnt, items[]
 exports.getPark = async (req, res, next) => {
@@ -82,7 +81,7 @@ exports.getPark = async (req, res, next) => {
 };
 
 // @desc        way main 화면용
-// @route       GET /api/v1/search/way?keyword=&offset=
+// @route       GET /api/v1/search/way?&offset=
 // @request
 // @response    success, cnt, items[]
 exports.getWay = async (req, res, next) => {
@@ -109,8 +108,8 @@ exports.getWay = async (req, res, next) => {
   }
 };
 
-// @desc        park  main 화면용
-// @route       GET /api/v1/search/parksearch?keyword=&offset=
+// @desc        park  검색
+// @route       GET /api/v1/search/parksearch?keyword=&offset=&lat=&lng
 // @request
 // @response    success, cnt, items[]
 exports.getParkSearch = async (req, res, next) => {
@@ -135,7 +134,7 @@ exports.getParkSearch = async (req, res, next) => {
   }
 };
 
-// @desc        way main 화면용
+// @desc        way검색
 // @route       GET /api/v1/search/waysearch?keyword=&offset=
 // @request
 // @response    success, cnt, items[]
