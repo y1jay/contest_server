@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  getSearch,
+  getSportSearch,
   getSports,
   getPark,
   getWay,
@@ -10,7 +10,7 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getSearch);
+router.route("/sportsearch").get(getSportSearch);
 router.route("/sports").get(getSports);
 router.route("/park").get(getPark);
 router.route("/way").get(getWay);

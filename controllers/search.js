@@ -5,10 +5,10 @@ const jwt = require("jsonwebtoken");
 const { filter } = require("mysql2/lib/constants/charset_encodings");
 
 // @desc        현제 위치 기반 키워드 검색
-// @route       GET /api/v1/search?keyword=&lat=&lng=&offset=
+// @route       GET /api/v1/search/sportsearch?keyword=&lat=&lng=&offset=
 // @request
 // @response    success, cnt, items[]
-exports.getSearch = async (req, res, next) => {
+exports.getSportSearch = async (req, res, next) => {
   let keyword = req.query.keyword;
   let lat = req.query.lat;
   let lng = req.query.lng;
