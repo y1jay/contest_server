@@ -28,7 +28,7 @@ exports.addFavorite = async (req, res, next) => {
   }
 };
 
-// @desc        즐겨찾기 불러오기
+// @desc        즐겨찾기 불러오기(해당 정보)
 // @route       GET /api/v1/favorite
 // @request
 // @response    success, cnt, items[]
@@ -43,6 +43,60 @@ exports.getFavorite = async (req, res, next) => {
   left join way_rows as w
   on f.idx = w.CPI_NAME
   where f.idx = "${idx}"`;
+
+  try {
+    [rows] = await connection.query(query);
+    res.status(200).json({ success: true, cnt: rows.length, items: rows });
+  } catch (e) {
+    res.status(500).json({ success: false, e });
+  }
+};
+
+// @desc        즐겨찾기 불러오기(스포츠)
+// @route       GET /api/v1/favorite/sport
+// @request
+// @response    success, cnt, items[]
+exports.sportIsFavorite = async (req, res, next) => {
+  let query = `select * from favorite as f
+    left join sport_rows as s
+    on f.idx = s.SVCID
+    where f.idx = s.SVCID`;
+
+  try {
+    [rows] = await connection.query(query);
+    res.status(200).json({ success: true, cnt: rows.length, items: rows });
+  } catch (e) {
+    res.status(500).json({ success: false, e });
+  }
+};
+
+// @desc        즐겨찾기 불러오기(공원)
+// @route       GET /api/v1/favorite/park
+// @request
+// @response    success, cnt, items[]
+exports.parkIsFavorite = async (req, res, next) => {
+  let query = `select * from favorite as f
+    left join park_rows as p
+    on f.idx = p.P_IDX
+    where f.idx = p.P_IDX`;
+
+  try {
+    [rows] = await connection.query(query);
+    res.status(200).json({ success: true, cnt: rows.length, items: rows });
+  } catch (e) {
+    res.status(500).json({ success: false, e });
+  }
+};
+
+// @desc        즐겨찾기 불러오기(두드림길)
+// @route       GET /api/v1/favorite/way
+// @request
+// @response    success, cnt, items[]
+exports.wayIsFavorite = async (req, res, next) => {
+  let query = `select * from favorite as f
+    left join way_rows as w
+    on f.idx = w.CPI_NAME
+    where f.idx = w.CPI_NAME`;
 
   try {
     [rows] = await connection.query(query);
