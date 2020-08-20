@@ -30,14 +30,12 @@ exports.getSearch = async (req, res, next) => {
   }
 };
 
-// @desc        현제 위치 기반 지역 검색
-// @route       GET /api/v1/search/all?keyword=&lat=&lng=&offset=
+// @desc        통합 검색
+// @route       GET /api/v1/search/all?keyword=&offset=
 // @request
 // @response    success, cnt, items[]
-exports.getAreaSearch = async (req, res, next) => {
+exports.getAllsSearch = async (req, res, next) => {
   let keyword = req.query.keyword;
-  let lat = req.query.lat;
-  let lng = req.query.lng;
   let offset = req.query.offset;
 
   let query = `select * from search as s
@@ -49,7 +47,7 @@ exports.getAreaSearch = async (req, res, next) => {
   on w.CPI_IDX = s.S_CPI_IDX
   where t.SVCNM like "%${keyword}%" or p.P_NAME like "%${keyword}%"
    or p.P_PARK like "%${keyword}%" or w.CPI_NAME like "%${keyword}%" 
-   or w.COURSE_NAME like "%${keyword}%" limit 0,25`;
+   or w.COURSE_NAME like "%${keyword}%" limit 0,${offset}`;
 
   try {
     [rows] = await connection.query(query);
