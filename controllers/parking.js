@@ -16,7 +16,8 @@ exports.getLocationParking = async (req, res, next) => {
     ( 6371 * acos ( cos ( radians(${lat}) ) * cos( radians( s.lat ) ) * 
     cos( radians( s.lng ) - radians(${lng}) ) + sin ( radians(${lat}) ) * 
     sin( radians( s.lat ) ))) AS distance 
-    FROM parking s 
+    FROM parking s
+    group by addr 
     HAVING distance < 100 ORDER BY distance LIMIT ${offset} ,25`;
 
   try {
@@ -44,6 +45,7 @@ exports.getAddressParking = async (req, res, next) => {
   sin( radians( s.lat ) ))) AS distance 
     FROM parking s 
     where s.addr like "%${keyword}%"
+    group by addr
     HAVING distance < 100 ORDER BY distance LIMIT ${offset} ,25`;
 
   try {
