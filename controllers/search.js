@@ -19,7 +19,7 @@ exports.getSportSearch = async (req, res, next) => {
   sin( radians( s.X ) ))) AS distance 
   FROM sport_rows s 
   where SVCNM like  "%${keyword}%" or PLACENM like "%${keyword}%" or MINCLASSNM like "%${keyword}%"
-  HAVING distance < 100 ORDER BY distance LIMIT ${offset} ,25;`;
+  HAVING distance < 1000 ORDER BY distance LIMIT ${offset} ,25;`;
   console.log(query);
   try {
     [rows] = await connection.query(query);
@@ -39,13 +39,16 @@ exports.getSports = async (req, res, next) => {
   let lng = req.query.lng;
   let offset = req.query.offset;
 
+  if (keyword) {
+  }
+
   let query = `SELECT  s.*,  
   ( 6371 * acos ( cos ( radians(${lat}) ) * cos( radians( s.X ) ) * 
   cos( radians( s.Y ) - radians(${lng}) ) + sin ( radians(${lat}) ) * 
   sin( radians( s.X ) ))) AS distance 
   FROM sport_rows s 
   where MINCLASSNM like "%${keyword}%"
-  HAVING distance < 100 ORDER BY distance LIMIT ${offset} ,25;`;
+  HAVING distance < 1000 ORDER BY distance LIMIT ${offset} ,25;`;
   try {
     [rows] = await connection.query(query);
 
@@ -70,7 +73,7 @@ exports.getPark = async (req, res, next) => {
   cos( radians( s.LONGITUDE ) - radians(${lng}) ) + sin ( radians(${lat}) ) * 
   sin( radians( s.LATITUDE ) ))) AS distance 
   FROM park_rows s 
-  HAVING distance < 100 ORDER BY distance LIMIT ${offset} ,25;`;
+  HAVING distance < 1000 ORDER BY distance LIMIT ${offset} ,25;`;
   try {
     [rows] = await connection.query(query);
 
@@ -95,7 +98,7 @@ exports.getWay = async (req, res, next) => {
   cos( radians( s.Y ) - radians(${lng}) ) + sin ( radians(${lat}) ) * 
   sin( radians( s.X ) ))) AS distance 
   FROM way_rows s 
-  HAVING distance < 100 ORDER BY distance LIMIT ${offset} ,25;`;
+  HAVING distance < 400 ORDER BY distance LIMIT ${offset} ,25;`;
 
   let testquery = `select * from way_rows limit ${offset},25`;
 
@@ -124,7 +127,7 @@ exports.getParkSearch = async (req, res, next) => {
   sin( radians( s.LATITUDE ) ))) AS distance 
   FROM park_rows s 
   where s.P_PARK like "%${keyword}%" or s.P_ZONE like "%${keyword}%"
-  HAVING distance < 100 ORDER BY distance LIMIT ${offset} ,25;`;
+  HAVING distance < 400 ORDER BY distance LIMIT ${offset} ,25;`;
   try {
     [rows] = await connection.query(query);
 
@@ -149,7 +152,7 @@ exports.getWaySearch = async (req, res, next) => {
   cos( radians( s.Y ) - radians(${lng}) ) + sin ( radians(${lat}) ) * 
   sin( radians( s.X ) ))) AS distance 
   FROM way_rows s 
-  HAVING distance < 100 ORDER BY distance LIMIT ${offset} ,25;`;
+  HAVING distance < 400 ORDER BY distance LIMIT ${offset} ,25;`;
 
   let testquery = `select * from way_rows where COURSE_NAME like "%${keyword}%" or AREA_GU like "%${keyword}%" limit ${offset},25`;
 
