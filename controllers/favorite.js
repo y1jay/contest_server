@@ -129,7 +129,7 @@ exports.deleteFavorite = async (req, res, next) => {
   let id = req.body.id;
   let idx = req.body.idx;
 
-  let query = `delete from favorite where idx = ${idx} and device = "${id}"`;
+  let query = `delete from favorite where idx = "${idx}" and device = "${id}"`;
   try {
     [rows] = await connection.query(query);
     if (rows.affectedRows != 1) {
@@ -137,6 +137,6 @@ exports.deleteFavorite = async (req, res, next) => {
     }
     res.status(200).json({ success: true });
   } catch (e) {
-    res.status(500).json({ success: false, e });
+    res.status(500).json({ success: false, e, id: id, idx: idx });
   }
 };
