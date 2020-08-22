@@ -2,6 +2,8 @@ const connection = require("../db/mysql_connection");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const proj4 = require("proj4");
+const fs = require("fs");
 
 // @desc        인서트 문 (관리자 인증 추가하면 좋을듯)
 // @route       POST /api/v1/insert
@@ -39,4 +41,55 @@ exports.insertSearch = async (req, res, next) => {
   //    finally {
   //     conn.release();
   //   }
+};
+
+// @desc        두드림길 위도 경도 변환
+// @route       PUT /api/v1/insert/updateway
+// @request
+// @response    success
+exports.updateWayLocation = async (req, res, next) => {
+  //   const conn = await connection.getConnection();
+
+  let xyquery1 = `SELECT X,Y FROM contest.way_rows order by id limit 0,15`;
+  console.log(xyquery1);
+  let xyquery2 = `SELECT * FROM contest.way_rows order by id limit 800,800`;
+  try {
+    // await conn.beginTransaction();
+    [rows] = await connection.query(xyquery1);
+    let jsonObj = rows;
+    let post = Object.keys(jsonObj).map(function (index) {
+      let obj = jsonObj[index];
+      return Object.keys(obj).map(function (val) {
+        return obj[val];
+      });
+    });
+    console.log("post", post);
+
+    var firstProjection =
+      "+proj=tmerc +lat_0=38 +lon_0=128 +k=0.9999 +x_0=288250 +y_0=500100 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43";
+    var secondProjection = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+
+    for (let i = 0; i < post.length; i++) {
+      console.log(post[0]);
+      let lonAndLat1 = proj4(firstProjection, secondProjection, post[i]);
+
+      console.log(lonAndLat1[0]);
+      // way_query = `update way_rows set Y = ${lonAndLat1[0]},X= ${
+      //   lonAndLat1[1]
+      // } where id =${i + 1}`;
+      // console.log(way_query);
+      try {
+        [result] = await connection.query(xyquery1);
+      } catch (e) {
+        res.status(404).json({ success: false, e: e });
+      }
+    }
+    res.status(200).json({ success: true });
+    // #1. 변환한 위도 경도 값 저장
+    res.status(200).json({ success: true });
+    //  await conn.commit();
+  } catch (e) {
+    // await conn.rollback();
+    res.status(500).json({ success: false, e: e });
+  }
 };
