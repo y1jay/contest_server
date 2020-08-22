@@ -109,13 +109,13 @@ exports.getWay = async (req, res, next) => {
   sin( radians( s.X ) ))) AS distance 
   FROM way_rows s 
   left join (select * from favorite where device = "${id}") as f
-  on s.CPI_IDX = f.idx
+  on s.CPI_NAME = f.idx
   HAVING distance < 400 ORDER BY distance LIMIT ${offset} ,25;`;
 
   let testquery = `select s.*,ifnull(f.isFavorite,0) as isFavorite 
   from way_rows as s
   left join (select * from favorite where device = "${id}") as f
-  on s.CPI_IDX = f.idx
+  on s.CPI_NAME = f.idx
    limit ${offset},25`;
 
   try {
@@ -173,13 +173,13 @@ exports.getWaySearch = async (req, res, next) => {
   sin( radians( s.X ) ))) AS distance 
   FROM way_rows s 
   left join (select * from favorite where device = "${id}") as f
-  on s.CPI_IDX = f.idx
+  on s.CPI_NAME = f.idx
   HAVING distance < 400 ORDER BY distance LIMIT ${offset} ,25;`;
 
   let testquery = `select * ,  ifnull(f.isFavorite,0) as isFavorite 
   from way_rows as s
   left join (select * from favorite where device = "${id}") as f
-  on s.CPI_IDX = f.idx
+  on s.CPI_NAME = f.idx
    where COURSE_NAME like "%${keyword}%" or AREA_GU like "%${keyword}%" limit ${offset},25`;
 
   try {
