@@ -61,17 +61,23 @@ exports.getFavorite = async (req, res, next) => {
 };
 
 // @desc        즐겨찾기 불러오기(스포츠)
-// @route       GET /api/v1/favorite/sport   ?id&offset
+// @route       GET /api/v1/favorite/sport   ?id&offset&lat&lng
 // @request
 // @response    success, cnt, items[]
 exports.sportIsFavorite = async (req, res, next) => {
   let id = req.query.id;
   let offset = req.query.offset;
-  let query = `select * 
-  from favorite as f
-    left join sport_rows as s
-    on f.idx = s.SVCID
-    where f.idx = s.SVCID and device = "${id}" limit ${offset},25`;
+  let lat = req.query.lat;
+  let lng = req.query.lng;
+  let query = `SELECT  s.*,ifnull(f.isFavorite,0) as isFavorite,  
+  ( 6371 * acos ( cos ( radians(${lat}) ) * cos( radians( s.X ) ) * 
+  cos( radians( s.Y ) - radians(${lng}) ) + sin ( radians(${lat}) ) * 
+  sin( radians( s.X ) ))) AS distance 
+  FROM sport_rows s 
+  left join (select * from favorite where device = "${id}") as f
+  on s.SVCID = f.idx
+  where  s.SVCID and device = "${id}"
+  HAVING distance < 400 ORDER BY distance LIMIT ${offset} ,25`;
 
   try {
     [rows] = await connection.query(query);
@@ -87,11 +93,18 @@ exports.sportIsFavorite = async (req, res, next) => {
 // @response    success, cnt, items[]
 exports.parkIsFavorite = async (req, res, next) => {
   let id = req.query.id;
+  let lat = req.query.lat;
+  let lng = req.query.lng;
   let offset = req.query.offset;
-  let query = `select * from favorite as f
-    left join park_rows as p
-    on f.idx = p.P_IDX
-    where f.idx = p.P_IDX and device = "${id}" limit ${offset},25`;
+  let query = `SELECT  s.*,    ifnull(f.isFavorite,0) as isFavorite ,
+  ( 6371 * acos ( cos ( radians(${lat}) ) * cos( radians( s.LATITUDE ) ) * 
+  cos( radians( s.LONGITUDE ) - radians(${lng}) ) + sin ( radians(${lat}) ) * 
+  sin( radians( s.LATITUDE ) ))) AS distance 
+  FROM park_rows s 
+  left join (select * from favorite where device = "${id}") as f
+  on s.P_IDX = f.idx
+  where f.idx = s.P_IDX and device = "${id}"
+  HAVING distance < 400 ORDER BY distance LIMIT ${offset} ,25`;
 
   try {
     [rows] = await connection.query(query);
@@ -107,11 +120,18 @@ exports.parkIsFavorite = async (req, res, next) => {
 // @response    success, cnt, items[]
 exports.wayIsFavorite = async (req, res, next) => {
   let offset = req.query.offset;
+  let lat = req.query.lat;
+  let lng = req.query.lng;
   let id = req.query.id;
-  let query = `select * from favorite as f
-    left join way_rows as w
-    on f.idx = w.CPI_NAME
-    where f.idx = w.CPI_NAME and device = "${id}" limit ${offset},25`;
+  let query = `SELECT  s.*,  ifnull(f.isFavorite,0) as isFavorite , 
+  ( 6371 * acos ( cos ( radians(${lat}) ) * cos( radians( s.X ) ) * 
+  cos( radians( s.Y ) - radians(${lng}) ) + sin ( radians(${lat}) ) * 
+  sin( radians( s.X ) ))) AS distance 
+  FROM way_rows s 
+  left join (select * from favorite where device = "${id}") as f
+  on s.CPI_NAME = f.idx
+  where f.idx = s.CPI_NAME and device = "${id}"
+  HAVING distance < 400 ORDER BY distance LIMIT ${offset} ,25;`;
 
   try {
     [rows] = await connection.query(query);

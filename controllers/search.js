@@ -22,6 +22,7 @@ exports.getSportSearch = async (req, res, next) => {
   left join (select * from favorite where device = "${id}") as f
   on s.SVCID = f.idx
   where SVCNM like  "%${keyword}%" or PLACENM like "%${keyword}%" or MINCLASSNM like "%${keyword}%"
+  or AREANM like "%${keyword}%"
   HAVING distance < 1000 ORDER BY distance LIMIT ${offset} ,25;`;
   console.log(query);
   try {
@@ -119,7 +120,7 @@ exports.getWay = async (req, res, next) => {
    limit ${offset},25`;
 
   try {
-    [rows] = await connection.query(testquery);
+    [rows] = await connection.query(query);
 
     res.status(200).json({ success: true, cnt: rows.length, items: rows });
   } catch (e) {
@@ -144,7 +145,7 @@ exports.getParkSearch = async (req, res, next) => {
   sin( radians( s.LATITUDE ) ))) AS distance 
   FROM park_rows s 
   left join (select * from favorite where device = "${id}") as f
-  on s.CPI_IDX = f.idx
+  on s.P_IDX = f.idx
   where s.P_PARK like "%${keyword}%" or s.P_ZONE like "%${keyword}%"
   HAVING distance < 400 ORDER BY distance LIMIT ${offset} ,25;`;
   try {
@@ -174,16 +175,11 @@ exports.getWaySearch = async (req, res, next) => {
   FROM way_rows s 
   left join (select * from favorite where device = "${id}") as f
   on s.CPI_NAME = f.idx
+  where COURSE_NAME like "%${keyword}%" or AREA_GU like "%${keyword}%" or s.CPI_NAME like "%${keyword}%"
   HAVING distance < 400 ORDER BY distance LIMIT ${offset} ,25;`;
 
-  let testquery = `select * ,  ifnull(f.isFavorite,0) as isFavorite 
-  from way_rows as s
-  left join (select * from favorite where device = "${id}") as f
-  on s.CPI_NAME = f.idx
-   where COURSE_NAME like "%${keyword}%" or AREA_GU like "%${keyword}%" limit ${offset},25`;
-
   try {
-    [rows] = await connection.query(testquery);
+    [rows] = await connection.query(query);
 
     res.status(200).json({ success: true, cnt: rows.length, items: rows });
   } catch (e) {

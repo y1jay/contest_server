@@ -50,7 +50,7 @@ exports.insertSearch = async (req, res, next) => {
 exports.updateWayLocation = async (req, res, next) => {
   //   const conn = await connection.getConnection();
 
-  let xyquery1 = `SELECT X,Y FROM contest.way_rows order by id limit 0,15`;
+  let xyquery1 = `SELECT X,Y FROM contest.way_rows order by id limit 0,1500`;
   console.log(xyquery1);
   let xyquery2 = `SELECT * FROM contest.way_rows order by id limit 800,800`;
   try {
@@ -74,10 +74,10 @@ exports.updateWayLocation = async (req, res, next) => {
       let lonAndLat1 = proj4(firstProjection, secondProjection, post[i]);
 
       console.log(lonAndLat1[0]);
-      // way_query = `update way_rows set Y = ${lonAndLat1[0]},X= ${
-      //   lonAndLat1[1]
-      // } where id =${i + 1}`;
-      // console.log(way_query);
+      way_query = `update way_rows set Y = ${lonAndLat1[0]},X= ${
+        lonAndLat1[1]
+      } where id =${i + 1}`;
+      console.log(way_query);
       try {
         [result] = await connection.query(xyquery1);
       } catch (e) {
@@ -85,8 +85,7 @@ exports.updateWayLocation = async (req, res, next) => {
       }
     }
     res.status(200).json({ success: true });
-    // #1. 변환한 위도 경도 값 저장
-    res.status(200).json({ success: true });
+
     //  await conn.commit();
   } catch (e) {
     // await conn.rollback();
