@@ -55,7 +55,7 @@ exports.countRanking = async (req, res, next) => {
   let sportQuery = `select * ,count(r.id) scnt
   from ranking as r
   join sport_rows as s
-  on r.s_svcid = s.SVCID group by r.s_svcid order by scnt desc;`;
+  on r.s_svcid = s.SVCID group by r.s_svcid order by scnt desc limit 0, 4;`;
   // 1 sprots, 2 park, 3way
   let sport;
   try {
@@ -70,7 +70,7 @@ exports.countRanking = async (req, res, next) => {
   from ranking as r
   join park_rows as p
   on r.p_idx = p.P_IDX
-  group by r.p_idx order by pcnt desc;`;
+  group by r.p_idx order by pcnt desc limit 0, 4;`;
   // 1 sprots, 2 park, 3way
   let park;
   try {
@@ -85,7 +85,7 @@ exports.countRanking = async (req, res, next) => {
   from ranking as r
   join way_rows as w
   on r.w_idx = w.CPI_IDX
-  group by r.w_idx order by wcnt desc;`;
+  group by r.w_idx order by wcnt desc limit 0, 4;`;
   // 1 sprots, 2 park, 3way
   let way;
   try {
