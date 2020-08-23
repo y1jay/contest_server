@@ -76,7 +76,7 @@ exports.sportIsFavorite = async (req, res, next) => {
   FROM sport_rows s 
   left join (select * from favorite where device = "${id}") as f
   on s.SVCID = f.idx
-  where  s.SVCID and device = "${id}"
+  where  f.idx = s.SVCID and device = "${id}"
   HAVING distance < 400 ORDER BY distance LIMIT ${offset} ,25`;
 
   try {
