@@ -1,7 +1,5 @@
 const connection = require("../db/mysql_connection");
-const validator = require("validator");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+
 
 // @desc        시설물 위치기반 주차장
 // @route       GET /api/v1/parking/location/way?offset=&lat=&lng=

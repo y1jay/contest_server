@@ -1,7 +1,5 @@
 const connection = require("../db/mysql_connection");
-const validator = require("validator");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+
 
 // @desc        즐겨찾기 추가
 // @route       POST /api/v1/favorite

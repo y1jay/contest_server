@@ -1,9 +1,6 @@
 const connection = require("../db/mysql_connection");
-const validator = require("validator");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const proj4 = require("proj4");
-const fs = require("fs");
+
 
 // @desc        인서트 문 (관리자 인증 추가하면 좋을듯)
 // @route       POST /api/v1/insert

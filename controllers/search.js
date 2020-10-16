@@ -1,7 +1,5 @@
 const connection = require("../db/mysql_connection");
-const validator = require("validator");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+
 
 // @desc        스포츠 검색
 // @route       GET /api/v1/search/sportsearch?keyword=&lat=&lng=&offset=

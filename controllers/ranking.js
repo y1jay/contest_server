@@ -1,7 +1,5 @@
 const connection = require("../db/mysql_connection");
-const validator = require("validator");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+
 
 // @desc        add ranking
 // @route       POST /api/v1/ranking/add
@@ -52,10 +50,10 @@ exports.countRanking = async (req, res, next) => {
   }
   cnt = cntrows;
 
-  let sportQuery = `select * ,count(r.id) scnt
+  let sportQuery = `select * ,count(r.id) cnt
   from ranking as r
   join sport_rows as s
-  on r.s_svcid = s.SVCID group by r.s_svcid order by scnt desc;`;
+  on r.s_svcid = s.SVCID group by r.s_svcid order by cnt desc;`;
   // 1 sprots, 2 park, 3way
   let sport;
   try {
@@ -66,11 +64,11 @@ exports.countRanking = async (req, res, next) => {
   }
   sport = sportRows;
 
-  let parkQuery = `select * ,count(r.id) as pcnt
+  let parkQuery = `select * ,count(r.id) as cnt
   from ranking as r
   join park_rows as p
   on r.p_idx = p.P_IDX
-  group by r.p_idx order by pcnt desc;`;
+  group by r.p_idx order by cnt desc;`;
   // 1 sprots, 2 park, 3way
   let park;
   try {
@@ -79,13 +77,13 @@ exports.countRanking = async (req, res, next) => {
     res.status(500).json({ success: false, e });
     return;
   }
-  park = parkRows;
+  sport = sport.concat(parkRows);
 
-  let wayQuery = `select * ,count(r.id) as wcnt
+  let wayQuery = `select * ,count(r.id) as cnt
   from ranking as r
   join way_rows as w
   on r.w_idx = w.CPI_IDX
-  group by r.w_idx order by wcnt desc;`;
+  group by r.w_idx order by cnt desc;`;
   // 1 sprots, 2 park, 3way
   let way;
   try {
@@ -94,7 +92,7 @@ exports.countRanking = async (req, res, next) => {
     res.status(500).json({ success: false, e });
     return;
   }
-  way = wayRows;
+  sport = sport.concat(wayRows);
 
-  res.status(200).json({ success: true, cnt, sport, park, way });
+  res.status(200).json({ success: true, cnt, sport});
 };
