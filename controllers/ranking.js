@@ -58,12 +58,12 @@ exports.countRanking = async (req, res, next) => {
 		 ON r.s_svcid = s.SVCID
 	  WHERE s.SVCID IS NOT NULL
 	 UNION ALL
-	SELECT p.P_IDX,p.P_PARK,p.P_ZONE,p.P_IMG,p.TEMPLATE_URL,"park" AS Category
+	SELECT p.P_IDX,p.P_ZONE,p.P_PARK,p.P_IMG,p.TEMPLATE_URL,"park" AS Category
 	  from ranking as r
 	  join park_rows as p
 	   on r.p_idx  = p.P_IDX
 	UNION ALL
-	SELECT  w.CPI_IDX, w.CPI_NAME,w.AREA_GU, "" AS temp1, "" AS temp2,"way" AS Category
+	SELECT  w.CPI_IDX,w.AREA_GU, w.CPI_NAME, "" AS temp1, "" AS temp2,"way" AS Category
 	  from ranking as r
 	  join way_rows as w
 	    on w.CPI_IDX = r.w_idx) AS ranking
