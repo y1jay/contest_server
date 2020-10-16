@@ -67,7 +67,7 @@ exports.countRanking = async (req, res, next) => {
 	  from ranking as r
 	  join way_rows as w
 	    on w.CPI_IDX = r.w_idx) AS ranking
- GROUP BY SVCID, AREANM , SVCNM ORDER BY CNT DESC LIMIT 0,20;
+ GROUP BY SVCID, AREANM , SVCNM ORDER BY CNT DESC LIMIT 0,10;
 `;
   // 1 sprots, 2 park, 3way
   try {
