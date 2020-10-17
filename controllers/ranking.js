@@ -52,42 +52,6 @@ exports.countRanking = async (req, res, next) => {
   }
   cnt = cntrows;
 
-<<<<<<< HEAD
-  let sportQuery = `select * ,count(r.id) scnt
-  from ranking as r
-  join sport_rows as s
-  on r.s_svcid = s.SVCID group by r.s_svcid order by scnt desc limit 0, 4;`;
-  // 1 sprots, 2 park, 3way
-  let sport;
-  try {
-    [sportRows] = await connection.query(sportQuery);
-  } catch (e) {
-    res.status(500).json({ success: false, e });
-    return;
-  }
-  sport = sportRows;
-
-  let parkQuery = `select * ,count(r.id) as pcnt
-  from ranking as r
-  join park_rows as p
-  on r.p_idx = p.P_IDX
-  group by r.p_idx order by pcnt desc limit 0, 4;`;
-  // 1 sprots, 2 park, 3way
-  let park;
-  try {
-    [parkRows] = await connection.query(parkQuery);
-  } catch (e) {
-    res.status(500).json({ success: false, e });
-    return;
-  }
-  park = parkRows;
-
-  let wayQuery = `select * ,count(r.id) as wcnt
-  from ranking as r
-  join way_rows as w
-  on r.w_idx = w.CPI_IDX
-  group by r.w_idx order by wcnt desc limit 0, 4;`;
-=======
   let sportQuery = `SELECT SVCID, AREANM , SVCNM , IMGURL, SVCURL,Category, count(SVCID) CNT
   FROM
 	(SELECT s.SVCID,s.AREANM , concat(s.SVCNM, " (" , s.MINCLASSNM , ")") AS SVCNM , s.IMGURL,s.SVCURL,"sport" AS Category
@@ -105,18 +69,15 @@ exports.countRanking = async (req, res, next) => {
 	  from ranking as r
 	  join way_rows as w
 	    on w.CPI_IDX = r.w_idx) AS ranking
- GROUP BY SVCID, AREANM , SVCNM ORDER BY CNT DESC LIMIT 0,20;
+ GROUP BY SVCID, AREANM , SVCNM ORDER BY CNT DESC LIMIT 0,10;
 `;
->>>>>>> parent of bec5ade... 랭킹 수정
   // 1 sprots, 2 park, 3way
-  let way;
   try {
-    [wayRows] = await connection.query(wayQuery);
+    [rows] = await connection.query(sportQuery);
   } catch (e) {
     res.status(500).json({ success: false, e });
     return;
   }
-  way = wayRows;
 
-  res.status(200).json({ success: true, cnt, sport, park, way });
+  res.status(200).json({ success: true, rows });
 };
