@@ -52,6 +52,7 @@ exports.countRanking = async (req, res, next) => {
   }
   cnt = cntrows;
 
+<<<<<<< HEAD
   let sportQuery = `select * ,count(r.id) scnt
   from ranking as r
   join sport_rows as s
@@ -86,6 +87,27 @@ exports.countRanking = async (req, res, next) => {
   join way_rows as w
   on r.w_idx = w.CPI_IDX
   group by r.w_idx order by wcnt desc limit 0, 4;`;
+=======
+  let sportQuery = `SELECT SVCID, AREANM , SVCNM , IMGURL, SVCURL,Category, count(SVCID) CNT
+  FROM
+	(SELECT s.SVCID,s.AREANM , concat(s.SVCNM, " (" , s.MINCLASSNM , ")") AS SVCNM , s.IMGURL,s.SVCURL,"sport" AS Category
+	   FROM ranking as r
+	   JOIN sport_rows as s
+		 ON r.s_svcid = s.SVCID
+	  WHERE s.SVCID IS NOT NULL
+	 UNION ALL
+	SELECT p.P_IDX,p.P_ZONE,p.P_PARK,p.P_IMG,p.TEMPLATE_URL,"park" AS Category
+	  from ranking as r
+	  join park_rows as p
+	   on r.p_idx  = p.P_IDX
+	UNION ALL
+	SELECT  w.CPI_IDX,w.AREA_GU, w.CPI_NAME, "" AS temp1, "" AS temp2,"way" AS Category
+	  from ranking as r
+	  join way_rows as w
+	    on w.CPI_IDX = r.w_idx) AS ranking
+ GROUP BY SVCID, AREANM , SVCNM ORDER BY CNT DESC LIMIT 0,20;
+`;
+>>>>>>> parent of bec5ade... 랭킹 수정
   // 1 sprots, 2 park, 3way
   let way;
   try {
